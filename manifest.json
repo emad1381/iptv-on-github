@@ -1,0 +1,20 @@
+{
+  "name": "NeonStream IPTV",
+  "short_name": "NeonStream",
+  "description": "Personal IPTV dashboard with HLS and DASH playback",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#070a15",
+  "theme_color": "#070a15",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./assets/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["entertainment", "video"]
+}

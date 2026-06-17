@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en" data-theme="night">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="NeonStream — Personal IPTV dashboard with HLS and DASH playback" />
+  <meta name="theme-color" content="#070a15" />
+  <title>NeonStream IPTV</title>
+  <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
+  <link rel="manifest" href="./manifest.json" />
+  <link rel="stylesheet" href="./css/themes.css" />
+  <link rel="stylesheet" href="./css/main.css" />
+  <link rel="stylesheet" href="./css/player.css" />
+  <link rel="stylesheet" href="./css/modal.css" />
+  <link rel="stylesheet" href="./css/mobile.css" />
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest" defer></script>
+  <script src="https://cdn.dashjs.org/latest/dash.all.min.js" defer></script>
+  <script type="module" src="./js/app.js" defer></script>
+</head>
+<body>
+  <!-- Toast container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <div class="wrap">
+    <!-- Header -->
+    <header class="card header">
+      <div class="brand">
+        <span class="dot"></span>
+        <div class="brand-text">
+          <div>NeonStream IPTV</div>
+          <div class="brand-version">STATIC EDITION v2.0</div>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="pill" id="channelCount" style="font-size:.7rem;">0 channels</span>
+        <button class="btn btn-icon" id="openSearchBtn" title="Global Search (Ctrl+K)">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        </button>
+        <button class="btn btn-icon" id="openSettingsBtn" title="Settings">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        </button>
+        <button class="btn btn-icon" id="openDebugBtn" title="Diagnostics">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83M12 2v4M12 18v4"></path></svg>
+        </button>
+        <button class="btn btn-icon" id="openShortcutsBtn" title="Keyboard Shortcuts">?</button>
+        <button class="btn btn-icon" id="themeBtn" title="Toggle Theme"></button>
+      </div>
+    </header>
+
+    <!-- Main grid -->
+    <main class="grid">
+      <!-- Channel panel -->
+      <section class="card panel">
+        <h3>My Channels</h3>
+        <p class="muted tiny" style="margin:0 0 .6rem">Add, test, play, and save your channels.</p>
+        <div class="stack">
+          <input class="input" id="name" placeholder="Channel name" />
+          <input class="input" id="url" placeholder="https://...m3u8 or .mpd" dir="ltr" />
+          <div style="display:flex;gap:.4rem;">
+            <button class="btn primary" id="addBtn" style="flex:1;">+ Add Channel</button>
+            <button class="btn" id="importM3UBtn" title="Import M3U file">
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+            </button>
+          </div>
+        </div>
+        <div class="cat-tabs" id="catTabs"></div>
+        <div class="channels" id="channels"></div>
+      </section>
+
+      <!-- Player panel -->
+      <section class="card panel">
+        <h3>Player</h3>
+        <p class="muted tiny" id="playingMeta" style="margin:0 0 .65rem">Select a channel to start playback.</p>
+        <div class="video-wrap">
+          <video id="video" controls playsinline preload="auto"></video>
+          <button class="fs-btn" id="fsBtn" title="Fullscreen">&#x26F6;</button>
+        </div>
+        <div class="status">
+          <span class="pill" id="qualityPill">Quality: auto</span>
+          <span class="pill" id="statePill">State: idle</span>
+          <span class="pill" id="proxyPill" title="Proxy mode">Proxy: off</span>
+        </div>
+        <div class="test-result-area" id="testResultArea"></div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Category Picker Modal -->
+  <div class="modal-overlay" id="catPickerOverlay">
+    <div class="modal-card">
+      <h3>Choose Category</h3>
+      <div class="cat-picker-list" id="catPickerList"></div>
+      <div style="margin-top:.7rem;display:flex;gap:.4rem;">
+        <input class="input" id="catPickerNew" placeholder="New category..." style="font-size:.8rem;" />
+        <button class="btn" id="catPickerAddBtn" style="padding:.3rem .6rem;font-size:.8rem;">+</button>
+      </div>
+      <button class="btn" id="catPickerCancel" style="width:100%;margin-top:.5rem;font-size:.8rem;">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Search Modal -->
+  <div class="modal-overlay" id="searchModalOverlay">
+    <div class="card search-modal-content">
+      <div class="search-modal-header">
+        <h2><span class="dot"></span> Global IPTV Database</h2>
+        <button class="btn modal-close-btn" id="closeSearchBtn">&times;</button>
+      </div>
+      <div class="search-modal-body">
+        <h3 style="margin:.1rem 0 .25rem">Global Search</h3>
+        <p class="muted tiny" style="margin:0 0 .55rem">Search channels from IPTV-org and add them instantly.</p>
+        <div class="search-head">
+          <input class="input" id="searchQuery" placeholder="Search channel name (e.g. BBC, Sports, News)" />
+          <select class="select" id="searchCountry"><option value="">All countries</option></select>
+          <button class="btn primary" id="searchBtn">Search</button>
+        </div>
+        <div class="loader" id="searchLoader">Loading global database...</div>
+        <div class="results" id="searchResults"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModalOverlay">
+    <div class="modal-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="margin:0;">Settings</h3>
+        <button class="btn modal-close-btn" id="closeSettingsBtn">&times;</button>
+      </div>
+
+      <div class="settings-section">
+        <label class="settings-label">CORS Proxy URL</label>
+        <p class="muted tiny" style="margin:0 0 .4rem;">Use a CORS proxy to play streams that block cross-origin requests.</p>
+        <div class="proxy-row">
+          <input class="input" id="proxyUrl" placeholder="https://corsproxy.io/?url=" dir="ltr" />
+        </div>
+        <div class="proxy-presets">
+          <button class="btn sm" data-set-proxy="">Direct (No Proxy)</button>
+          <button class="btn sm" data-set-proxy="https://corsproxy.io/?">corsproxy.io</button>
+          <button class="btn sm" data-set-proxy="https://api.allorigins.win/raw?url=">allorigins</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <label class="settings-label">Export / Import</label>
+        <div class="settings-actions">
+          <button class="btn" id="exportBtn" style="flex:1;">Export JSON</button>
+          <button class="btn" id="importJsonBtn" style="flex:1;">Import JSON</button>
+          <button class="btn" id="importM3USettingsBtn" style="flex:1;">Import M3U</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <label class="settings-label">Danger Zone</label>
+        <button class="btn danger" id="clearAllBtn" style="width:100%;">Clear All Data</button>
+      </div>
+
+      <div class="settings-footer">Data is stored locally in your browser (IndexedDB). No account needed.</div>
+    </div>
+  </div>
+
+  <!-- Diagnostics Modal -->
+  <div class="modal-overlay" id="debugModalOverlay">
+    <div class="card diag-modal-content">
+      <div class="diag-modal-header">
+        <h2><span class="dot"></span> Engine Diagnostics</h2>
+        <div style="display:flex;gap:.5rem;">
+          <button class="btn sm" id="clearDebugBtn">Clear</button>
+          <button class="btn modal-close-btn" id="closeDebugBtn">&times;</button>
+        </div>
+      </div>
+      <div style="padding:1rem;flex:1;overflow-y:auto;overscroll-behavior:contain;">
+        <div class="diag-log" id="debug-log">[System] Diagnostics initialized...</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shortcuts Modal -->
+  <div class="modal-overlay" id="shortcutsModalOverlay">
+    <div class="modal-card" style="max-width:420px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;">
+        <h3 style="margin:0;">Keyboard Shortcuts</h3>
+        <button class="btn modal-close-btn" id="closeShortcutsBtn">&times;</button>
+      </div>
+      <div class="shortcuts-grid">
+        <div class="shortcut-row"><span>Global Search</span><span><span class="kbd">Ctrl</span>+<span class="kbd">K</span></span></div>
+        <div class="shortcut-row"><span>Add Channel</span><span><span class="kbd">Ctrl</span>+<span class="kbd">Enter</span></span></div>
+        <div class="shortcut-row"><span>Toggle Theme</span><span><span class="kbd">Ctrl</span>+<span class="kbd">D</span></span></div>
+        <div class="shortcut-row"><span>Settings</span><span><span class="kbd">Ctrl</span>+<span class="kbd">,</span></span></div>
+        <div class="shortcut-row"><span>Close Modal</span><span><span class="kbd">Esc</span></span></div>
+        <div class="shortcut-row"><span>Play/Pause</span><span><span class="kbd">Space</span></span></div>
+        <div class="shortcut-row"><span>Fullscreen</span><span><span class="kbd">F</span></span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hidden file inputs -->
+  <input type="file" id="m3uFileInput" accept=".m3u,.m3u8,.txt" style="display:none" />
+  <input type="file" id="jsonFileInput" accept=".json" style="display:none" />
+</body>
+</html>

@@ -1,0 +1,234 @@
+/**
+ * modal.css — Modal overlays, search modal, settings modal, diagnostics modal, shortcuts modal, category picker
+ */
+
+/* === Base Modal Overlay === */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .6);
+  backdrop-filter: blur(6px);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-overlay.open { display: flex; }
+
+/* === Modal Card === */
+.modal-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  backdrop-filter: blur(20px);
+  padding: 1.2rem;
+  min-width: 280px;
+  max-width: 500px;
+  box-shadow: var(--shadow);
+}
+
+.modal-card h3 { margin: 0 0 .8rem; font-size: .95rem; }
+
+/* === Category Picker === */
+.cat-picker-list {
+  display: grid;
+  gap: .4rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.cat-pick-item {
+  padding: .5rem .7rem;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: .82rem;
+  font-weight: 600;
+  transition: all .15s;
+}
+
+.cat-pick-item:hover {
+  border-color: var(--accent);
+  background: rgba(99, 102, 241, .08);
+}
+
+/* === Search Modal === */
+.search-modal-content {
+  width: 100%;
+  max-width: 900px;
+  min-height: 400px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.search-modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.search-modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.search-modal-body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.search-head {
+  display: grid;
+  grid-template-columns: 1fr 180px auto;
+  gap: .5rem;
+}
+
+.results {
+  margin-top: .75rem;
+  max-height: 300px;
+  overflow: auto;
+  display: grid;
+  gap: .45rem;
+}
+
+.result {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: .45rem .55rem;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: .4rem;
+  align-items: center;
+}
+
+.result-logo {
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+.result-info {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+/* === Settings Modal === */
+.settings-section {
+  margin-bottom: 1.2rem;
+}
+
+.settings-label {
+  font-size: .82rem;
+  font-weight: 600;
+  color: var(--muted);
+  display: block;
+  margin-bottom: .4rem;
+}
+
+.proxy-row {
+  display: flex;
+  gap: .4rem;
+  align-items: center;
+  margin-top: .4rem;
+}
+
+.proxy-row .input {
+  flex: 1;
+  font-size: .8rem;
+  padding: .5rem .6rem;
+}
+
+.proxy-presets {
+  display: flex;
+  gap: .3rem;
+  margin-top: .4rem;
+  flex-wrap: wrap;
+}
+
+.settings-actions {
+  display: flex;
+  gap: .4rem;
+  flex-wrap: wrap;
+}
+
+.settings-footer {
+  text-align: center;
+  font-size: .72rem;
+  color: var(--muted);
+}
+
+/* === Diagnostics Modal === */
+.diag-modal-content {
+  width: 100%;
+  max-width: 900px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.diag-modal-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.diag-modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.diag-log {
+  background: #000;
+  border-radius: 10px;
+  padding: .75rem;
+  font-family: monospace;
+  font-size: .75rem;
+  max-height: 60vh;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: #a3e635;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* === Shortcuts Modal === */
+.shortcuts-grid {
+  display: grid;
+  gap: .6rem;
+  font-size: .85rem;
+}
+
+.shortcut-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+/* === Close Button === */
+.modal-close-btn {
+  padding: .4rem .8rem;
+  border-color: transparent;
+  background: rgba(255, 255, 255, 0.1);
+}

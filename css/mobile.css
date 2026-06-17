@@ -1,0 +1,109 @@
+/**
+ * mobile.css — Responsive breakpoints for mobile, tablet, TV
+ */
+
+/* Tablet */
+@media (max-width: 1000px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .search-head {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .wrap {
+    padding: .5rem;
+  }
+
+  .header {
+    padding: .75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .5rem;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .header-actions::-webkit-scrollbar { display: none; }
+
+  .panel {
+    padding: .75rem;
+  }
+
+  .channels {
+    max-height: 280px;
+  }
+
+  .channel-row {
+    padding: .35rem .5rem;
+  }
+
+  .cat-tabs {
+    padding: .2rem 0;
+    gap: .25rem;
+  }
+
+  .cat-tab {
+    padding: .25rem .5rem;
+    font-size: .7rem;
+  }
+
+  .search-head {
+    grid-template-columns: 1fr;
+    gap: .35rem;
+  }
+
+  .result {
+    grid-template-columns: 1fr auto;
+  }
+
+  .result .btn:first-of-type {
+    display: none;
+  }
+
+  .modal-card {
+    padding: 1rem;
+    min-width: unset;
+    max-width: unset;
+    width: 100%;
+    margin: 0 .5rem;
+  }
+
+  video {
+    border-radius: 10px;
+  }
+
+  .btn {
+    padding: .5rem .65rem;
+    font-size: .85rem;
+  }
+
+  .btn.sm {
+    padding: .25rem .45rem;
+    font-size: .7rem;
+  }
+}
+
+/* TV / Large screens */
+@media (min-width: 1600px) {
+  .wrap {
+    max-width: 1600px;
+  }
+
+  .grid {
+    grid-template-columns: 400px 1fr;
+  }
+
+  .channels {
+    max-height: 600px;
+  }
+}
