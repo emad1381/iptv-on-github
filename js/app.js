@@ -19,6 +19,7 @@ import * as search from './search.js';
 import * as settings from './settings.js';
 import * as shortcuts from './shortcuts.js';
 import * as diagnostics from './diagnostics.js';
+import * as latency from './latency.js';
 
 // === Shared Application State ===
 // Single object passed to all modules — mutations are visible everywhere
@@ -100,6 +101,10 @@ function playChannel(index) {
     const playUrl = getProxiedUrl(ch.url);
     player.playHLS(video, playUrl, setPlayerState, (q) => setQuality(q));
   }
+
+  // Show latency graph and run test
+  latency.show();
+  latency.runTest(ch.url);
 }
 
 // === Event Delegation ===
@@ -360,6 +365,18 @@ async function bootstrap() {
   state.categories = saved.categories;
   state.proxyUrl = storage.loadProxyUrl();
 
+  // Add default channel if first launch (empty channels)
+  if (state.channels.length === 0) {
+    state.channels.push({
+      id: 'default_iran_intl',
+      name: 'Iran International',
+      url: 'https://live.livetvstream.co.uk/LS-63503-4/index.m3u8',
+      test: null,
+      category: null,
+    });
+    storage.saveAppState(state.channels, state.categories);
+  }
+
   // Init modules with shared state reference
   categories.init(state);
   channels.init(state, getProxiedUrl, playChannel);
@@ -367,8 +384,11 @@ async function bootstrap() {
   settings.init(state, () => {
     categories.renderTabs();
     channels.renderList();
+    // Update latency proxy when settings change
+    latency.setProxyUrl(state.proxyUrl);
   });
   diagnostics.init();
+  latency.init(state.proxyUrl);
 
   // Apply theme
   applyTheme(storage.loadTheme(), storage.saveTheme);
@@ -392,6 +412,11 @@ async function bootstrap() {
   setupThemeToggle();
   setupDragDrop();
   settings.bindProxyEvents();
+
+  // Latency test button
+  bindClick('latencyTestBtn', () => {
+    if (state.playingUrl) latency.runTest(state.playingUrl);
+  });
 
   // Add channel button
   bindClick('addBtn', () => channels.add(saveState));

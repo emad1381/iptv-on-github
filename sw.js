@@ -3,7 +3,7 @@
  * Caches the app shell and serves it when offline.
  */
 
-const CACHE_NAME = 'neonstream-v3';
+const CACHE_NAME = 'neonstream-v4';
 const SHELL_URLS = [
   './',
   './index.html',
@@ -23,6 +23,7 @@ const SHELL_URLS = [
   './js/settings.js',
   './js/shortcuts.js',
   './js/diagnostics.js',
+  './js/latency.js',
   './assets/favicon.svg',
   './assets/logo.svg',
   './manifest.json',

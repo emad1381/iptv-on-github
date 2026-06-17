@@ -81,6 +81,17 @@
           <span class="pill" id="proxyPill" title="Proxy mode">Proxy: off</span>
         </div>
         <div class="test-result-area" id="testResultArea"></div>
+
+        <!-- Latency Graph -->
+        <div class="latency-graph" id="latencyGraph">
+          <div class="latency-graph-title">
+            <svg width="12" height="12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Network Path
+            <button class="latency-test-btn" id="latencyTestBtn">Test</button>
+          </div>
+          <div class="latency-pipeline" id="latencyPipeline"></div>
+          <div class="latency-summary" id="latencySummary"></div>
+        </div>
       </section>
     </main>
   </div>

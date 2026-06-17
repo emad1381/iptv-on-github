@@ -39,6 +39,7 @@ export function close() {
   if (input) state.proxyUrl = input.value.trim();
   storage.saveProxyUrl(state.proxyUrl);
   updateProxyPill();
+  if (renderFn) renderFn();
   closeModal('settingsModalOverlay');
   toast('Settings saved', 'ok');
 }

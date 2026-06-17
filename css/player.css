@@ -46,3 +46,156 @@ video {
   font-size: .82rem;
   display: none;
 }
+
+/* === Latency Graph === */
+.latency-graph {
+  margin-top: .8rem;
+  padding: .8rem 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .02);
+  display: none;
+}
+
+.latency-graph.visible { display: block; }
+
+.latency-graph-title {
+  font-size: .72rem;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: .6rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.latency-pipeline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: wrap;
+}
+
+.latency-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .25rem;
+  min-width: 70px;
+}
+
+.latency-node-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  border: 2px solid var(--line);
+  background: var(--card);
+  transition: border-color .3s;
+}
+
+.latency-node-icon.active { border-color: var(--accent); }
+.latency-node-icon.good { border-color: var(--ok); }
+.latency-node-icon.warn { border-color: var(--warn); }
+.latency-node-icon.bad { border-color: var(--bad); }
+
+.latency-node-label {
+  font-size: .65rem;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.latency-node-time {
+  font-size: .78rem;
+  font-weight: 700;
+  font-family: monospace;
+  color: var(--muted);
+  min-height: 1.1em;
+}
+
+.latency-node-time.good { color: var(--ok); }
+.latency-node-time.warn { color: var(--warn); }
+.latency-node-time.bad { color: var(--bad); }
+
+.latency-arrow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .15rem;
+  padding: 0 .2rem;
+  min-width: 50px;
+}
+
+.latency-arrow-line {
+  width: 100%;
+  height: 2px;
+  background: var(--line);
+  position: relative;
+}
+
+.latency-arrow-line::after {
+  content: '';
+  position: absolute;
+  right: -1px;
+  top: -4px;
+  border: 5px solid transparent;
+  border-left-color: var(--line);
+}
+
+.latency-arrow-line.animating {
+  background: linear-gradient(90deg, var(--accent), var(--accent2));
+  animation: latencyPulse 1.5s ease-in-out infinite;
+}
+
+.latency-arrow-line.animating::after {
+  border-left-color: var(--accent2);
+}
+
+.latency-arrow-hop {
+  font-size: .6rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.latency-summary {
+  margin-top: .5rem;
+  text-align: center;
+  font-size: .72rem;
+  color: var(--muted);
+}
+
+.latency-summary strong { color: var(--text); }
+
+.latency-test-btn {
+  font-size: .65rem;
+  padding: .2rem .5rem;
+  border-radius: 6px;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.latency-test-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+@keyframes latencyPulse {
+  0%, 100% { opacity: .5; }
+  50% { opacity: 1; }
+}
+
+@media (max-width: 600px) {
+  .latency-node { min-width: 55px; }
+  .latency-node-icon { width: 30px; height: 30px; font-size: .85rem; }
+  .latency-arrow { min-width: 35px; padding: 0 .1rem; }
+  .latency-node-label { font-size: .55rem; }
+}
