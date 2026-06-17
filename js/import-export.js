@@ -65,13 +65,15 @@ export function importM3U(text, existingChannels) {
  * Export app data as a downloadable JSON file
  * @param {Array} channels
  * @param {string[]} categories
+ * @param {object} [settings] — optional proxy/theme settings
  */
-export function exportJSON(channels, categories) {
+export function exportJSON(channels, categories, settings) {
   const data = {
     channels,
     categories,
+    settings: settings || null,
     exportedAt: new Date().toISOString(),
-    version: '2.0',
+    version: '2.1',
   };
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
@@ -87,7 +89,7 @@ export function exportJSON(channels, categories) {
  * Import channels from a JSON file
  * @param {string} text — file content
  * @param {Array} existingChannels — current channels (for dedup)
- * @returns {{ added: number, channels: Array, categories: string[] }}
+ * @returns {{ added: number, channels: Array, categories: string[], settings: object|null }}
  */
 export function importJSON(text, existingChannels) {
   let data;
@@ -95,12 +97,12 @@ export function importJSON(text, existingChannels) {
     data = JSON.parse(text);
   } catch {
     toast('Failed to parse JSON', 'bad');
-    return { added: 0, channels: [], categories: [] };
+    return { added: 0, channels: [], categories: [], settings: null };
   }
 
   if (!data.channels || !Array.isArray(data.channels)) {
     toast('Invalid JSON format', 'warn');
-    return { added: 0, channels: [], categories: [] };
+    return { added: 0, channels: [], categories: [], settings: null };
   }
 
   const existingUrls = new Set(existingChannels.map(c => c.url));
@@ -116,6 +118,7 @@ export function importJSON(text, existingChannels) {
     added: added.length,
     channels: added,
     categories: Array.isArray(data.categories) ? data.categories : [],
+    settings: data.settings || null,
   };
 }
 

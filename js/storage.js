@@ -27,6 +27,7 @@ let cache = {
   categories: ['Sports', 'News', 'Animation'],
   theme: 'night',
   proxyUrl: '',
+  customProxies: [],
 };
 
 let db = null;
@@ -174,6 +175,7 @@ async function loadAll() {
   for (const s of settings || []) {
     if (s.key === 'theme') cache.theme = s.value === 'day' ? 'day' : 'night';
     if (s.key === 'proxyUrl') cache.proxyUrl = s.value || '';
+    if (s.key === 'customProxies' && Array.isArray(s.value)) cache.customProxies = s.value;
   }
 }
 
@@ -295,6 +297,61 @@ export async function saveProxyUrl(url) {
 }
 
 /**
+ * Load custom proxy presets — reads from cache
+ * @returns {{ name: string, url: string }[]}
+ */
+export function loadCustomProxies() {
+  return cache.customProxies;
+}
+
+/**
+ * Save custom proxy presets — writes to IDB
+ * @param {{ name: string, url: string }[]} proxies
+ * @returns {Promise<void>}
+ */
+export async function saveCustomProxies(proxies) {
+  cache.customProxies = proxies;
+  try {
+    await put(STORES.settings, { key: 'customProxies', value: proxies });
+  } catch {
+    // write failed silently
+  }
+}
+
+/**
+ * Export all settings as a plain object (for JSON export)
+ * @returns {{ proxyUrl: string, customProxies: Array, theme: string }}
+ */
+export function exportSettings() {
+  return {
+    proxyUrl: cache.proxyUrl,
+    customProxies: cache.customProxies,
+    theme: cache.theme,
+  };
+}
+
+/**
+ * Import settings from a plain object (from JSON import)
+ * @param {{ proxyUrl?: string, customProxies?: Array, theme?: string }} data
+ * @returns {Promise<void>}
+ */
+export async function importSettings(data) {
+  if (!data) return;
+  if (typeof data.proxyUrl === 'string') {
+    cache.proxyUrl = data.proxyUrl;
+    await put(STORES.settings, { key: 'proxyUrl', value: data.proxyUrl });
+  }
+  if (Array.isArray(data.customProxies)) {
+    cache.customProxies = data.customProxies;
+    await put(STORES.settings, { key: 'customProxies', value: data.customProxies });
+  }
+  if (data.theme === 'day' || data.theme === 'night') {
+    cache.theme = data.theme;
+    await put(STORES.settings, { key: 'theme', value: data.theme });
+  }
+}
+
+/**
  * Clear ALL app data from IDB
  * @returns {Promise<void>}
  */
@@ -303,6 +360,7 @@ export async function clearAll() {
   cache.categories = ['Sports', 'News', 'Animation'];
   cache.theme = 'night';
   cache.proxyUrl = '';
+  cache.customProxies = [];
   try {
     await Promise.all([
       clearStore(STORES.channels),

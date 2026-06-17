@@ -131,12 +131,10 @@
         <label class="settings-label">CORS Proxy URL</label>
         <p class="muted tiny" style="margin:0 0 .4rem;">Use a CORS proxy to play streams that block cross-origin requests.</p>
         <div class="proxy-row">
-          <input class="input" id="proxyUrl" placeholder="https://corsproxy.io/?url=" dir="ltr" />
+          <input class="input" id="proxyUrl" placeholder="https://iptv-proxy-github.nikiali823.workers.dev/?url=" dir="ltr" />
         </div>
-        <div class="proxy-presets">
-          <button class="btn sm" data-set-proxy="">Direct (No Proxy)</button>
-          <button class="btn sm" data-set-proxy="https://corsproxy.io/?">corsproxy.io</button>
-          <button class="btn sm" data-set-proxy="https://api.allorigins.win/raw?url=">allorigins</button>
+        <div class="proxy-presets" id="proxyPresets">
+          <!-- Rendered dynamically by settings.js -->
         </div>
       </div>
 

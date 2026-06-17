@@ -179,9 +179,6 @@ function setupCategoryEvents() {
       if (addBtn) addBtn.style.display = '';
       return;
     }
-
-    const proxyBtn = e.target.closest('[data-set-proxy]');
-    if (proxyBtn) settings.setProxyPreset(proxyBtn.dataset.setProxy);
   });
 }
 
@@ -394,6 +391,7 @@ async function bootstrap() {
   setupVideoEvents();
   setupThemeToggle();
   setupDragDrop();
+  settings.bindProxyEvents();
 
   // Add channel button
   bindClick('addBtn', () => channels.add(saveState));

@@ -48,7 +48,7 @@ if (localStorageLeaks.length === 0) {
 
 // Test 3: storage.js exports
 const storageContent = fs.readFileSync(path.join(base, 'js/storage.js'), 'utf8');
-const storageExports = ['init', 'loadAppState', 'saveAppState', 'loadTheme', 'saveTheme', 'loadProxyUrl', 'saveProxyUrl', 'clearAll'];
+const storageExports = ['init', 'loadAppState', 'saveAppState', 'loadTheme', 'saveTheme', 'loadProxyUrl', 'saveProxyUrl', 'clearAll', 'loadCustomProxies', 'saveCustomProxies', 'exportSettings', 'importSettings'];
 const missingStorageExports = storageExports.filter(e => {
   return storageContent.indexOf('export async function ' + e) === -1 &&
          storageContent.indexOf('export function ' + e) === -1;
@@ -67,6 +67,26 @@ if (storageContent.indexOf("'channels'") !== -1 &&
   log('IndexedDB stores defined', 'PASS', 'channels, categories, settings, backups');
 } else {
   log('IndexedDB stores defined', 'FAIL', 'Missing stores');
+}
+
+// Test 4b: Custom proxy support
+const settingsContent = fs.readFileSync(path.join(base, 'js/settings.js'), 'utf8');
+const hasCustomProxy = settingsContent.indexOf('addCustomProxy') !== -1 &&
+                       settingsContent.indexOf('removeCustomProxy') !== -1 &&
+                       settingsContent.indexOf('renderProxyPresets') !== -1 &&
+                       settingsContent.indexOf('bindProxyEvents') !== -1;
+if (hasCustomProxy) {
+  log('Custom proxy support', 'PASS', 'add, remove, render, bindProxyEvents');
+} else {
+  log('Custom proxy support', 'FAIL', 'Missing functions');
+}
+
+// Test 4c: Settings export/import includes proxy
+const ieContent = fs.readFileSync(path.join(base, 'js/import-export.js'), 'utf8');
+if (ieContent.indexOf('settings') !== -1 && ieContent.indexOf('version: \'2.1\'') !== -1) {
+  log('Export includes settings', 'PASS', 'version 2.1 with settings field');
+} else {
+  log('Export includes settings', 'FAIL', 'Missing settings in export');
 }
 
 // Test 5: Import graph
